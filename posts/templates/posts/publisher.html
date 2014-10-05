@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+    New Publisher
+{% endblock %}
+
+{% block body %}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">New Publisher</h3>
+        </div>
+        <div class="panel-body">
+            {% crispy form %}
+        </div>
+    </div>
+
+{% endblock %}

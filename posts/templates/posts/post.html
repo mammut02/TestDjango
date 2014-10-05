@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+    New Post
+{% endblock %}
+
+{% block body %}
+    {% if numPublisher == 0 %}
+        Create a publisher first
+        <a href="{% url 'posts:publisher' %}">New publisher</a>
+    {%  else %}
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">New Post</h3>
+            </div>
+            <div class="panel-body">
+                {% crispy form %}
+            </div>
+        </div>
+
+    {% endif %}
+{% endblock %}

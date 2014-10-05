@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Post Detail
+{% endblock %}
+
+{% block body %}
+    <h1>{{ post.name }}</h1>
+    <h3> by {{ post.publisher }} on {{ post.date_pub|date }}</h3>
+
+    <ul>
+        {% for comment in post.comment_set.all %}
+
+            <li>{{ comment.user }} : {{ comment.content }}</li>
+
+        {% endfor %}
+    </ul>
+{% endblock %}

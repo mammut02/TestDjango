@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+    Connexion
+{% endblock %}
+
+{% block body %}
+
+    {% if user.is_authenticated %}
+
+        <h1>You are connected.</h1>
+        <p>Your email: {{ user.email }}</p>
+
+    {% else %}
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Login</h3>
+            </div>
+            <div class="panel-body">
+                {% crispy form %}
+            </div>
+        </div>
+
+    {% endif %}
+
+{% endblock %}
