@@ -41,6 +41,11 @@ class Comment(models.Model):
     content = models.TextField(max_length=200)
     date_pub = models.DateTimeField(auto_now_add=True)
 
+class Vote(models.Model):
+    post = models.ForeignKey(Post)
+    user = models.ForeignKey(Publisher)
+    date_vote = models.DateTimeField(auto_now_add=True)
+
 
 
 
