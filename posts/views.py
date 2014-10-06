@@ -30,22 +30,19 @@ def get_post(request):
         form = PostForm(request.POST)
         if form.is_valid():
             # process data in form.cleaned_data
-            publisher = form.cleaned_data['publisher']
             name = form.cleaned_data['name']
             link = form.cleaned_data['link']
 
-            p = Post(name=name, link=link, publisher_id=publisher.pk)
+            p = Post(name=name, link=link, publisher_id=request.user.id)
             p.save();
 
             #redirect
             return HttpResponseRedirect('/posts')
 
     else:
-        # check if there is a publisher
-        p = Publisher.objects.count()
         form = PostForm()
 
-    return render(request, 'posts/post.html', {'form': form, 'numPublisher': p})
+    return render(request, 'posts/post.html', {'form': form})
 
 @login_required
 def get_publisher(request):

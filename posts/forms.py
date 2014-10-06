@@ -3,15 +3,10 @@ from django import forms
 from django.contrib.auth import authenticate
 from posts.models import Publisher
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Submit, Layout, Fieldset, ButtonHolder
+from crispy_forms.layout import Submit, Layout, Fieldset, ButtonHolder, Hidden
 
 
 class PostForm(forms.Form):
-
-    publisher = forms.ModelChoiceField(
-        label='Publisher',
-        queryset=Publisher.objects.all()
-    )
     name = forms.CharField(
         label='Post',
         max_length=50,
@@ -29,7 +24,6 @@ class PostForm(forms.Form):
         self.helper = FormHelper()
         self.helper.form_method = 'POST'
         self.helper.layout = Layout(
-            'publisher',
             'name',
             'link',
             Submit('submit', 'Submit')
