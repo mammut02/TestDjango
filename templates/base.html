@@ -21,6 +21,7 @@
             <div class="container-fluid">
                 {% if user.is_authenticated %}
                     <a href="{% url 'posts:logout' %}"><button type="button" class="btn btn-default navbar-btn">Sign out</button></a>
+                    <p class="navbar-text navbar-right">Signed in as <a href="#" class="navbar-link">{{ user }}</a></p>
                 {% else %}
                     <a href="{% url 'posts:login' %}"><button type="button" class="btn btn-default navbar-btn">Sign in</button></a>
                 {% endif %}
