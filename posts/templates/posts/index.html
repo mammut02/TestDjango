@@ -19,7 +19,7 @@
                     <td>Posts</td>
                     <td>Publisher</td>
                     <td>Publication date</td>
-                    <td>&nbsp;</td>
+                    {% if user.is_authenticated %}<td>&nbsp;</td>{% endif %}
                 </tr>
             </thead>
             <tbody>
@@ -28,21 +28,25 @@
 
                     <tr id="post_{{ post.id }}">
                         <td><a href="{% url 'posts:detail' post.id %}">{{ post.name }}</a></td>
-                        {%  if user.is_authenticated %}
+                        {% if user.is_authenticated %}
                             <td><a href="{% url 'posts:profile' post.publisher_id %}">{{ post.publisher }}</a></td>
                         {% else %}
                             <td>{{ post.publisher }}</td>
                         {% endif %}
                         <td>{{ post.date_pub|date:'Y-m-d H:i:s' }}</td>
-                        {%  if user.is_authenticated %}
-                            <td><button onclick="javascript:post_delete({{ post.id }}, '{% url "posts:deletePost" %}');">Delete</button></td>
+                        {% if user.is_authenticated %}
+                            <td>
+                                <button type="button" class="btn btn-default btn-xs" onclick="javascript:post_delete({{ post.id }}, '{% url "posts:deletePost" %}');">
+                                    <span class="glyphicon glyphicon-remove"></span> Delete
+                                </button>
+                            </td>
                         {% endif %}
                     </tr>
 
                 {% endfor %}
 
                 <tr>
-                    <td colspan="4">
+                    <td colspan="{% if user.is_authenticated %}4{% else %}3{% endif %}">
 
                         <div class="pagination">
                             <span class="step-links">
@@ -72,7 +76,11 @@
     {% endif %}
 
     {% if user.is_authenticated %}
-        <a href="{% url 'posts:post' %}"><button type="button" class="btn btn-default">Add Post</button></a>
+        <a href="{% url 'posts:post' %}">
+            <button type="button" class="btn btn-default">
+                <span class="glyphicon glyphicon-plus"></span> Add Post
+            </button>
+        </a>
     {% endif %}
 
 {% endblock %}
