@@ -1,6 +1,7 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, Http404
@@ -12,11 +13,20 @@ from posts.models import Post, Publisher, Comment
 
 
 def index(request):
-    latest_post_list = Post.objects.all().order_by('-date_pub')[:5]
-    context = {
-        'latest_post_list': latest_post_list
-    }
-    return render(request, 'posts/index.html', context)
+    all_posts = Post.objects.all().order_by('-date_pub')
+    paginator = Paginator(all_posts, 5)
+    page = request.GET.get('page')
+
+    try:
+        post_list = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        post_list = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g 9999), deliver last page of results.
+        post_list = paginator.page(paginator.num_pages)
+
+    return render(request, 'posts/index.html', {'post_list': post_list})
 
 def detail(request, post_id):
     try:
