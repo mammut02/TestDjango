@@ -4,6 +4,11 @@
     Posts
 {% endblock %}
 
+{% load static %}
+{% block head %}
+    <script src="{% static 'js/main.js' %}"></script>
+{% endblock %}
+
 {% block body %}
 
     {% if post_list %}
@@ -14,22 +19,30 @@
                     <td>Posts</td>
                     <td>Publisher</td>
                     <td>Publication date</td>
+                    <td>&nbsp;</td>
                 </tr>
             </thead>
             <tbody>
 
                 {% for post in post_list %}
 
-                    <tr>
+                    <tr id="post_{{ post.id }}">
                         <td><a href="{% url 'posts:detail' post.id %}">{{ post.name }}</a></td>
-                        <td>{{ post.publisher }}</td>
+                        {%  if user.is_authenticated %}
+                            <td><a href="{% url 'posts:profile' post.publisher_id %}">{{ post.publisher }}</a></td>
+                        {% else %}
+                            <td>{{ post.publisher }}</td>
+                        {% endif %}
                         <td>{{ post.date_pub|date:'Y-m-d H:i:s' }}</td>
+                        {%  if user.is_authenticated %}
+                            <td><button onclick="javascript:post_delete({{ post.id }}, '{% url "posts:deletePost" %}');">Delete</button></td>
+                        {% endif %}
                     </tr>
 
                 {% endfor %}
 
                 <tr>
-                    <td colspan="3">
+                    <td colspan="4">
 
                         <div class="pagination">
                             <span class="step-links">

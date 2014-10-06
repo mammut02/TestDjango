@@ -1,3 +1,5 @@
+import json
+
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -7,8 +9,10 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, Http404
 from django.core.urlresolvers import reverse
 
+
 # Create your views here.
-from posts.forms import PostForm, PublisherForm, LoginForm, CommentForm
+from django.views.decorators.csrf import csrf_exempt
+from posts.forms import PostForm, PublisherForm, LoginForm, CommentForm, DeletePostForm
 from posts.models import Post, Publisher, Comment
 
 
@@ -128,3 +132,19 @@ def connection(request):
 def log_out(request):
     logout(request)
     return HttpResponseRedirect(reverse('posts:index'))
+
+@login_required
+def profile(request, publisher_id):
+    return render(request, 'posts/profile.html')
+
+@csrf_exempt
+def deletePost(request):
+    return_value = "0"
+    if len(request.POST) > 0:
+        form = DeletePostForm(request.POST)
+        if form.is_valid():
+            id_post = form.cleaned_data['post']
+            post_record = Post.objects.get(id = id_post)
+            post_record.delete()
+            return_value = id_post
+    return HttpResponse(json.dumps(return_value), content_type="application/json")

@@ -101,3 +101,6 @@ class CommentForm(forms.Form):
             'content',
             Submit('submit', 'Submit')
         )
+
+class DeletePostForm(forms.Form):
+    post = forms.IntegerField()
