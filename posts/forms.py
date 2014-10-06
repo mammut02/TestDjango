@@ -84,3 +84,20 @@ class LoginForm(forms.Form):
             'password',
             Submit('submit', 'Submit')
         )
+
+class CommentForm(forms.Form):
+    content = forms.CharField(label="Comment")
+
+    def clean(self):
+        cleaned_data = super(CommentForm, self).clean()
+        content = self.cleaned_data.get('content')
+        return self.cleaned_data
+
+    def __init__(self, *args, **kwargs):
+        super(CommentForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_method = 'POST'
+        self.helper.layout = Layout(
+            'content',
+            Submit('submit', 'Submit')
+        )

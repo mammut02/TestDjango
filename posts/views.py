@@ -4,10 +4,11 @@ from django.contrib.auth.models import User
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, Http404
+from django.core.urlresolvers import reverse
 
 # Create your views here.
-from posts.forms import PostForm, PublisherForm, LoginForm
-from posts.models import Post, Publisher
+from posts.forms import PostForm, PublisherForm, LoginForm, CommentForm
+from posts.models import Post, Publisher, Comment
 
 
 def index(request):
@@ -22,9 +23,25 @@ def detail(request, post_id):
         post = Post.objects.get(pk=post_id)
     except Post.DoesNotExist:
         raise Http404
-    return render(request, 'posts/detail.html', {'post': post})
+    #return render(request, 'posts/detail.html', {'post': post})
 
-@login_required
+    if request.POST:
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            content = form.cleaned_data['content']
+
+            c = Comment(content=content, post_id=post_id, user_id=request.user.id)
+            c.save()
+
+            return HttpResponseRedirect(reverse('posts:detail', args=[post_id]))
+        else:
+            render(request, 'posts/detail.html', {'post': post, 'form': form})
+    else:
+        form = CommentForm()
+    form = CommentForm()
+    return render(request, 'posts/detail.html', {'post': post, 'form': form})
+
+#@login_required
 def get_post(request):
     if request.method == 'POST':
         form = PostForm(request.POST)
@@ -44,7 +61,7 @@ def get_post(request):
 
     return render(request, 'posts/post.html', {'form': form})
 
-@login_required
+#@login_required
 def get_publisher(request):
     if request.POST:
         form = PublisherForm(request.POST)
@@ -67,7 +84,7 @@ def get_publisher(request):
             new_publisher.save()
 
             #redirect
-            return HttpResponseRedirect('/posts')
+            return HttpResponseRedirect(reverse('posts:index'))
         else:
             render(request, 'posts/publisher.html', {'form': form})
 
@@ -89,6 +106,9 @@ def connection(request):
                 login(request, user)
                 if request.GET.get('next') is not None:
                     return redirect(request.GET['next'])
+                else:
+                    return HttpResponseRedirect(reverse('posts:index'))
+
         return render(request, 'posts/connection.html', {'form': form})
     else:
         form = LoginForm()
@@ -97,4 +117,4 @@ def connection(request):
 @login_required
 def log_out(request):
     logout(request)
-    return render(request, 'posts/index.html')
+    return HttpResponseRedirect(reverse('posts:index'))

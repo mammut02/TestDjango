@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load crispy_forms_tags %}
 
 {% block title %}
     Post Detail
@@ -15,4 +16,9 @@
 
         {% endfor %}
     </ul>
+
+    {% if user.is_authenticated %}
+        {% crispy form %}
+    {% endif %}
+
 {% endblock %}
