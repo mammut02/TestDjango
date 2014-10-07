@@ -25,3 +25,27 @@ function post_delete_confirm(response){
         alert('Error');
     }
 }
+
+function vote(id, vote, url) {
+    $.ajax({
+        type: 'POST',
+        url: url,
+        data: {post: id, vote: vote},
+        dataType: 'json',
+        success: vote_confirm,
+        error: function(){
+            alert('AJAX Error');
+        }
+    });
+}
+
+function vote_confirm(response){
+    total_vote = JSON.parse(response);
+    if(total_vote > 0){
+        $('#post-vote').text(total_vote);
+    }
+    else
+    {
+        $('#post-vote').text("0");
+    }
+}

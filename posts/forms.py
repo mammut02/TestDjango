@@ -104,3 +104,7 @@ class CommentForm(forms.Form):
 
 class DeletePostForm(forms.Form):
     post = forms.IntegerField()
+
+class VoteForm(forms.Form):
+    post = forms.IntegerField()
+    vote = forms.IntegerField()

@@ -12,12 +12,12 @@ from django.core.urlresolvers import reverse
 
 # Create your views here.
 from django.views.decorators.csrf import csrf_exempt
-from posts.forms import PostForm, PublisherForm, LoginForm, CommentForm, DeletePostForm
+from posts.forms import PostForm, PublisherForm, LoginForm, CommentForm, DeletePostForm, VoteForm
 from posts.models import Post, Publisher, Comment
 
 
 def index(request):
-    all_posts = Post.objects.all().order_by('-date_pub')
+    all_posts = Post.objects.all().order_by('-votes')
     paginator = Paginator(all_posts, 5)
     page = request.GET.get('page')
 
@@ -147,4 +147,20 @@ def deletePost(request):
             post_record = Post.objects.get(id = id_post)
             post_record.delete()
             return_value = id_post
+    return HttpResponse(json.dumps(return_value), content_type="application/json")
+
+@csrf_exempt
+def vote(request):
+    return_value = "0"
+    if len(request.POST) > 0:
+        form = VoteForm(request.POST)
+        if form.is_valid():
+            id_post = form.cleaned_data['post']
+            vote = form.cleaned_data['vote']
+            post_record = Post.objects.get(id = id_post)
+            post_record.votes += vote
+            if post_record.votes < 0:
+                post_record.votes = 0
+            post_record.save()
+            return_value = post_record.votes
     return HttpResponse(json.dumps(return_value), content_type="application/json")

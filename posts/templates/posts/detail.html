@@ -5,9 +5,30 @@
     Post Detail
 {% endblock %}
 
+{% load static %}
+{% block head %}
+    <script src="{% static 'js/main.js' %}"></script>
+{% endblock %}
+
 {% block body %}
-    <h1>{{ post.name }}</h1>
+    <h2>{{ post.name }}</h2>
     <h3> by {{ post.publisher }} on {{ post.date_pub|date }}</h3>
+
+    <div>
+        <div>Number of vote{{ post.votes|pluralize }} : <span id="post-vote">{{ post.votes }}</span></div>
+        <button type="button" class="btn btn-default btn-xs" onclick="javascript:vote({{ post.id }}, 1, '{% url "posts:vote" %}');">
+            <span class="glyphicon glyphicon-plus"></span> Vote Up
+        </button>
+        <button type="button" class="btn btn-default btn-xs" onclick="javascript:vote({{ post.id }}, -1, '{% url "posts:vote" %}');">
+            <span class="glyphicon glyphicon-minus"></span> Vote Down
+        </button>
+    </div>
+
+    {% if post.comment_set.count %}
+    <h4>There {{ post.comment_set.count|pluralize:"is, are" }} {{  post.comment_set.count }} comment{{ post.comment_set.count|pluralize }} </h4>
+    {% else %}
+    <h4>There is no comment.</h4>
+    {% endif %}
 
     <ul>
         {% for comment in post.comment_set.all %}

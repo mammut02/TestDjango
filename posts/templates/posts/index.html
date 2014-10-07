@@ -19,6 +19,7 @@
                     <td>Posts</td>
                     <td>Publisher</td>
                     <td>Publication date</td>
+                    <td>Votes</td>
                     {% if user.is_authenticated %}<td>&nbsp;</td>{% endif %}
                 </tr>
             </thead>
@@ -34,6 +35,7 @@
                             <td>{{ post.publisher }}</td>
                         {% endif %}
                         <td>{{ post.date_pub|date:'Y-m-d H:i:s' }}</td>
+                        <td>{{ post.votes }}</td>
                         {% if user.is_authenticated %}
                             <td>
                                 <button type="button" class="btn btn-default btn-xs" onclick="javascript:post_delete({{ post.id }}, '{% url "posts:deletePost" %}');">
@@ -46,7 +48,7 @@
                 {% endfor %}
 
                 <tr>
-                    <td colspan="{% if user.is_authenticated %}4{% else %}3{% endif %}">
+                    <td colspan="{% if user.is_authenticated %}5{% else %}4{% endif %}">
 
                         <div class="pagination">
                             <span class="step-links">
